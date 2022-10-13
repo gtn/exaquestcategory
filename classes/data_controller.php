@@ -22,7 +22,7 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-namespace customfield_checkbox;
+namespace customfield_exaquestcategory;
 
 use core_customfield\api;
 use core_customfield\output\field_data;
@@ -52,18 +52,24 @@ class data_controller extends \core_customfield\data_controller {
      * @param \MoodleQuickForm $mform
      */
     public function instance_form_definition(\MoodleQuickForm $mform) {
-        $field = $this->get_field();
-        $config = $field->get('configdata');
-        $elementname = $this->get_form_element_name();
-        // If checkbox is required (i.e. "agree to terms") then use 'checkbox' form element.
-        // The advcheckbox element cannot be used for required fields because advcheckbox elements always provide a value.
-        $isrequired = $field->get_configdata_property('required');
-        $mform->addElement($isrequired ? 'checkbox' : 'advcheckbox', $elementname, $this->get_field()->get_formatted_name());
-        $mform->setDefault($elementname, $config['checkbydefault']);
-        $mform->setType($elementname, PARAM_BOOL);
-        if ($isrequired) {
-            $mform->addRule($elementname, null, 'required', null, 'client');
-        }
+        global $COURSE;
+
+        $select = $mform->addElement('select', 'colors', get_string('Fragencharakter'), array(null, 'red', 'blue', 'green'));
+        $select->setMultiple(false);
+        $mform->addRule('colors', get_string('missingcolor'), 'required', null, 'client');
+        $mform->addRule('colors', 'message text', 'nonzero', null, 'client');
+        $select = $mform->addElement('select', 'colorss', get_string('Klassifikation'), array(null, 'red', 'blue', 'green'));
+        $select->setMultiple(false);
+        $mform->addRule('colorss', get_string('missingcolor'), 'required', null, 'client');
+        $mform->addRule('colorss', 'message text', 'nonzero', null, 'client');
+        $select = $mform->addElement('select', 'colorsss', get_string('Fragefach'), array(null, 'red', 'blue', 'green'));
+        $select->setMultiple(false);
+        $mform->addRule('colorsss', get_string('missingcolor'), 'required', null, 'client');
+        $mform->addRule('colorsss', 'message text', 'nonzero', null, 'client');
+        $select = $mform->addElement('select', 'colorssss', get_string('Lehrinhalt'), array(null, 'red', 'blue', 'green'));
+        $select->setMultiple(true);
+        $mform->addRule('colorssss', get_string('missingcolor'), 'required', null, 'client');
+        $mform->addRule('colorssss', 'message text', 'nonzero', null, 'client');
     }
 
     /**

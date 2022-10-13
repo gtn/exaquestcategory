@@ -21,7 +21,7 @@
  * @copyright  2018 Daniel Neis Araujo <danielneis@gmail.com>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-namespace customfield_checkbox\privacy;
+namespace customfield_exaquestcategory\privacy;
 
 use core_customfield\data_controller;
 use core_customfield\privacy\customfield_provider;

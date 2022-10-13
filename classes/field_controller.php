@@ -22,7 +22,7 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-namespace customfield_checkbox;
+namespace customfield_exaquestcategory;
 
 defined('MOODLE_INTERNAL') || die;
 
@@ -37,7 +37,7 @@ class field_controller  extends \core_customfield\field_controller {
     /**
      * Plugin type
      */
-    const TYPE = 'checkbox';
+    const TYPE = 'exaquestcategory';
 
     /**
      * Add fields for editing a checkbox field.
@@ -45,11 +45,11 @@ class field_controller  extends \core_customfield\field_controller {
      * @param \MoodleQuickForm $mform
      */
     public function config_form_definition(\MoodleQuickForm $mform) {
-        $mform->addElement('header', 'header_specificsettings', get_string('specificsettings', 'customfield_checkbox'));
+        /*$mform->addElement('header', 'header_specificsettings', get_string('specificsettings', 'customfield_exaquestcategory'));
         $mform->setExpanded('header_specificsettings', true);
 
-        $mform->addElement('selectyesno', 'configdata[checkbydefault]', get_string('checkedbydefault', 'customfield_checkbox'));
-        $mform->setType('configdata[checkbydefault]', PARAM_BOOL);
+        $mform->addElement('selectyesno', 'configdata[checkbydefault]', get_string('checkedbydefault', 'customfield_exaquestcategory'));
+        $mform->setType('configdata[checkbydefault]', PARAM_BOOL);*/
     }
 
     /**
@@ -63,7 +63,7 @@ class field_controller  extends \core_customfield\field_controller {
         $errors = parent::config_form_validation($data, $files);
 
         if ($data['configdata']['uniquevalues']) {
-            $errors['configdata[uniquevalues]'] = get_string('errorconfigunique', 'customfield_checkbox');
+            $errors['configdata[uniquevalues]'] = get_string('errorconfigunique', 'customfield_exaquestcategory');
         }
 
         return $errors;
