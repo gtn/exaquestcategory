@@ -52,24 +52,36 @@ class data_controller extends \core_customfield\data_controller {
      * @param \MoodleQuickForm $mform
      */
     public function instance_form_definition(\MoodleQuickForm $mform) {
-        global $COURSE;
+        global $COURSE, $DB;
 
-        $select = $mform->addElement('select', 'colors', get_string('Fragencharakter'), array(null, 'red', 'blue', 'green'));
+
+        if($records = $DB->get_records("block_exaquestcategories",  array("coursecategoryid" => $COURSE->category))){
+
+            $namesets = array(array(null),array(null),array(null),array(null));
+
+            foreach($records as $record){
+                $namesets[$record->categorytype][] = $record->categoryname;
+            }
+
+        }
+
+
+        $select = $mform->addElement('select', 'fragencharakter', get_string('Fragencharakter'), $namesets[0]);
         $select->setMultiple(false);
-        $mform->addRule('colors', get_string('missingcolor'), 'required', null, 'client');
-        $mform->addRule('colors', 'message text', 'nonzero', null, 'client');
-        $select = $mform->addElement('select', 'colorss', get_string('Klassifikation'), array(null, 'red', 'blue', 'green'));
+        $mform->addRule('fragencharakter', get_string('missingcolor'), 'required', null, 'client');
+        $mform->addRule('fragencharakter', 'message text', 'nonzero', null, 'client');
+        $select = $mform->addElement('select', 'klassifikation', get_string('Klassifikation'), $namesets[1]);
         $select->setMultiple(false);
-        $mform->addRule('colorss', get_string('missingcolor'), 'required', null, 'client');
-        $mform->addRule('colorss', 'message text', 'nonzero', null, 'client');
-        $select = $mform->addElement('select', 'colorsss', get_string('Fragefach'), array(null, 'red', 'blue', 'green'));
+        $mform->addRule('klassifikation', get_string('missingcolor'), 'required', null, 'client');
+        $mform->addRule('klassifikation', 'message text', 'nonzero', null, 'client');
+        $select = $mform->addElement('select', 'fragefach', get_string('Fragefach'), $namesets[2]);
         $select->setMultiple(false);
-        $mform->addRule('colorsss', get_string('missingcolor'), 'required', null, 'client');
-        $mform->addRule('colorsss', 'message text', 'nonzero', null, 'client');
-        $select = $mform->addElement('select', 'colorssss', get_string('Lehrinhalt'), array(null, 'red', 'blue', 'green'));
+        $mform->addRule('fragefach', get_string('missingcolor'), 'required', null, 'client');
+        $mform->addRule('fragefach', 'message text', 'nonzero', null, 'client');
+        $select = $mform->addElement('select', 'lehrinhalt', get_string('Lehrinhalt'), $namesets[3]);
         $select->setMultiple(true);
-        $mform->addRule('colorssss', get_string('missingcolor'), 'required', null, 'client');
-        $mform->addRule('colorssss', 'message text', 'nonzero', null, 'client');
+        $mform->addRule('lehrinhalt', get_string('missingcolor'), 'required', null, 'client');
+        //$mform->addRule('colorssss', 'message text', 'nonzero', null, 'client');
     }
 
     /**
@@ -78,6 +90,9 @@ class data_controller extends \core_customfield\data_controller {
      * @return mixed
      */
     public function get_default_value() {
+        global $DB;
+        $DB->insert_record('block_exaquestquestcat_mm', array("questionid" => 1, "exaquestcategoryid" => 2));
+
         return $this->get_field()->get_configdata_property('checkbydefault') ? 1 : 0;
     }
 
@@ -90,4 +105,6 @@ class data_controller extends \core_customfield\data_controller {
         $value = $this->get_value();
         return $value ? get_string('yes') : get_string('no');
     }
+
+
 }
