@@ -15,9 +15,9 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Customfields checkbox plugin
+ * Class field
  *
- * @package   customfield_checkbox
+ * @package   customfield_select
  * @copyright 2018 David Matamoros <davidmc@moodle.com>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -29,31 +29,41 @@ defined('MOODLE_INTERNAL') || die;
 /**
  * Class field
  *
- * @package customfield_checkbox
+ * @package customfield_select
  * @copyright 2018 David Matamoros <davidmc@moodle.com>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class field_controller  extends \core_customfield\field_controller {
+class field_controller extends \core_customfield\field_controller {
     /**
-     * Plugin type
+     * Customfield type
      */
     const TYPE = 'exaquestcategory';
 
     /**
-     * Add fields for editing a checkbox field.
+     * Add fields for editing a select field.
      *
      * @param \MoodleQuickForm $mform
      */
     public function config_form_definition(\MoodleQuickForm $mform) {
-        /*$mform->addElement('header', 'header_specificsettings', get_string('specificsettings', 'customfield_exaquestcategory'));
+        $mform->addElement('header', 'header_specificsettings', get_string('specificsettings', 'customfield_select'));
         $mform->setExpanded('header_specificsettings', true);
+        $mform->addElement('select', 'configdata[categorytype]', get_string('Kategorientyp'), array(0 => 'Fragencharakter', 1 => 'Klassifikation', 2 => 'Fragefach', 3 => 'Lehrinhalt'));
+        $mform->setType('configdata[categorytype]', PARAM_INT);
 
-        $mform->addElement('selectyesno', 'configdata[checkbydefault]', get_string('checkedbydefault', 'customfield_exaquestcategory'));
-        $mform->setType('configdata[checkbydefault]', PARAM_BOOL);*/
     }
 
     /**
-     * Validate the data on the field configuration form
+     * Return configured field options
+     *
+     * @return array
+     */
+    public function get_categorytype() {
+        return intval($this->get_configdata_property('categorytype'));
+    }
+
+    /**
+     * Validate the data from the config form.
+     * Sub classes must reimplement it.
      *
      * @param array $data from the add/edit profile field form
      * @param array $files
@@ -63,7 +73,7 @@ class field_controller  extends \core_customfield\field_controller {
         $errors = parent::config_form_validation($data, $files);
 
         if ($data['configdata']['uniquevalues']) {
-            $errors['configdata[uniquevalues]'] = get_string('errorconfigunique', 'customfield_exaquestcategory');
+            $errors['configdata[uniquevalues]'] = get_string('errorconfigunique', 'customfield_checkbox');
         }
 
         return $errors;
@@ -85,10 +95,25 @@ class field_controller  extends \core_customfield\field_controller {
      * @return array
      */
     public function course_grouping_format_values($values): array {
-        $name = $this->get_formatted_name();
-        return [
-            1 => $name.': '.get_string('yes'),
-            BLOCK_MYOVERVIEW_CUSTOMFIELD_EMPTY => $name.': '.get_string('no'),
-        ];
+        $options = $this->get_categorytype();
+        $ret = [];
+        foreach ($values as $value) {
+            if (isset($options[$value])) {
+                $ret[$value] = format_string($options[$value]);
+            }
+        }
+        $ret[BLOCK_MYOVERVIEW_CUSTOMFIELD_EMPTY] = get_string('nocustomvalue', 'block_myoverview',
+            $this->get_formatted_name());
+        return $ret;
+    }
+
+    /**
+     * Locate the value parameter in the field options array, and return it's index
+     *
+     * @param string $value
+     * @return int
+     */
+    public function parse_value(string $value) {
+        return (int) array_search($value, $this->get_categorytype());
     }
 }
