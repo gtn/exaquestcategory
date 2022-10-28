@@ -9,6 +9,9 @@
 
 namespace customfield_exaquestcategory;
 
+use core_customfield\data;
+use customfield_exaquestcategorymulti\field_controller;
+
 defined('MOODLE_INTERNAL') || die;
 
 /**
@@ -27,24 +30,33 @@ class data_controller extends \core_customfield\data_controller
      */
     public function datafield(): string
     {
-        return 'intvalue';
+        return 'value';
+    }
+
+    public function get_default_value() {
+        $defaultvalue = $this->get_field()->get_configdata_property('defaultvalue');
+        $options = field_controller::get_options_array($this->get_field());
+        $defaultvaluesarray = [];
+        $values = explode(",", $defaultvalue);
+
+        foreach ($values as $val) {
+            $index = $this->get_option_index($val, $options);
+            if ($index !== false) {
+                $defaultvaluesarray[] = intval($index);
+            }
+        }
+        return $defaultvaluesarray;
     }
 
     /**
-     * Returns the default value as it would be stored in the database (not in human-readable format).
+     * Get the option index in the array of options from the raw text value
      *
-     * @return mixed
+     * @param mixed $rawvalue
+     * @param array $options
+     * @return false|int|string
      */
-    public function get_default_value()
-    {
-        $defaultvalue = $this->get_field()->get_configdata_property('defaultvalue');
-        if ('' . $defaultvalue !== '') {
-            $key = array_search($defaultvalue, $this->nameset);
-            if ($key !== false) {
-                return $key;
-            }
-        }
-        return 0;
+    protected function get_option_index($rawvalue, $options) {
+        return array_search($rawvalue, $options);
     }
 
     /**
@@ -59,44 +71,18 @@ class data_controller extends \core_customfield\data_controller
         $field = $this->get_field();
         $categorytype= $field->get_categorytype();
 
+        $nameset = $field->get_options();
+        $elementname = $this->get_form_element_name();
 
-        if($records = $DB->get_records("block_exaquestcategories",  array("coursecategoryid" => $COURSE->category))){
-
-            $namesets = array(array(null),array(null),array(null),array(null));
-
-            foreach($records as $record){
-                $namesets[$record->categorytype][] = $record->categoryname;
-            }
-            $this->nameset = $namesets[$categorytype];
-
-            $elementname = $this->get_form_element_name();
-
-            switch($categorytype){
-                case 0:
-                    $select = $mform->addElement('select', $elementname, $field->get_formatted_name(), $namesets[0]);
-                    $select->setMultiple(false);
-                    $mform->addRule($elementname, get_string('missingcolor'), 'required', null, 'client');
-                    $mform->addRule($elementname, 'message text', 'nonzero', null, 'client');
-                    break;
-                case 1:
-                    $select = $mform->addElement('select', $elementname, $field->get_formatted_name(), $namesets[1]);
-                    $select->setMultiple(false);
-                    $mform->addRule($elementname, get_string('missingcolor'), 'required', null, 'client');
-                    $mform->addRule($elementname, 'message text', 'nonzero', null, 'client');
-                    break;
-                case 2:
-                    $select = $mform->addElement('select', $elementname, $field->get_formatted_name(), $namesets[2]);
-                    $select->setMultiple(false);
-                    $mform->addRule($elementname, get_string('missingcolor'), 'required', null, 'client');
-                   $mform->addRule($elementname, 'message text', 'nonzero', null, 'client');
-                    break;
-                case 3:
-                    $select = $mform->addElement('select', $elementname, $field->get_formatted_name(), $namesets[3]);
-                    $select->setMultiple(false);
-                    $mform->addRule($elementname, get_string('missingcolor'), 'required', null, 'client');
-                    break;
-            }
-
+        if($categorytype == 3) {
+            $select = $mform->addElement('select', $elementname, $field->get_formatted_name(), $nameset);
+            $select->setMultiple(true);
+            $mform->addRule($elementname, get_string('missingcolor'), 'required', null, 'client');
+        } else {
+            $select = $mform->addElement('select', $elementname, $field->get_formatted_name(), $nameset);
+            $select->setMultiple(false);
+            $mform->addRule($elementname, get_string('missingcolor'), 'required', null, 'client');
+            $mform->addRule($elementname, 'message text', 'nonzero', null, 'client');
         }
     }
 
@@ -117,7 +103,68 @@ class data_controller extends \core_customfield\data_controller
                 $errors[$elementname] = get_string('err_required', 'form');
             }
         }
-        return $errors;
+        return [];
+    }
+
+    public function instance_form_before_set_data(\stdClass $instance) {
+        if($this->get_field()->get_categorytype() == 3){
+
+            $instance->{$this->get_form_element_name()} = implode(',', $this->get_value());
+        } else {
+            parent::instance_form_before_set_data($instance);
+        }
+    }
+
+
+    /**
+     * Saves the data coming from form
+     *
+     * @param \stdClass $datanew data coming from the form
+     * @throws \coding_exception
+     */
+    public function instance_form_save(\stdClass $datanew) {
+        if($this->get_field()->get_categorytype() == 3) {
+            $elementname = $this->get_form_element_name();
+            if (!property_exists($datanew, $elementname)) {
+                return;
+            }
+            $value = implode(',', $datanew->$elementname);
+            $this->data->set($this->datafield(), $value);
+            $this->data->set('value', $value);
+            $this->save();
+        }else{
+            parent::instance_form_save($datanew);
+        }
+    }
+
+    /**
+     * Returns the value as it is stored in the database or default value if data record is not present
+     *
+     * @return array
+     */
+    public function get_value() {
+        if($this->get_field()->get_categorytype() == 3) {
+            if (!$this->get('id')) {
+                return $this->get_default_value();
+            }
+            return explode(',', $this->get($this->datafield()));
+        } else {
+            return parent::get_value();
+        }
+    }
+
+    /**
+     * Set the value as it should be stored in the database
+     *
+     * @param array $value to be set and transformed into a comma separated string
+     * @return data
+     */
+    public function set_value($value) {
+        if($this->get_field()->get_categorytype() == 3) {
+            return $this->set($this->datafield(), implode(',', $value));
+        } else {
+            return parent::set_value();
+        }
     }
 
 

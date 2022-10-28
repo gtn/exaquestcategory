@@ -80,6 +80,26 @@ class field_controller extends \core_customfield\field_controller {
     }
 
     /**
+     * Return configured field options
+     *
+     * @return array
+     */
+    public function get_options(): array {
+        global $DB, $COURSE;
+
+        $records = $DB->get_records("block_exaquestcategories",  array("coursecategoryid" => $COURSE->category));
+
+        $namesets = array(array(null),array(null),array(null));
+
+        foreach($records as $record){
+            $namesets[$record->categorytype][] = $record->categoryname;
+        }
+        $nameset = $namesets[$this->get_categorytype()];
+
+        return $nameset;
+    }
+
+    /**
      * Does this custom field type support being used as part of the block_myoverview
      * custom field grouping?
      * @return bool
