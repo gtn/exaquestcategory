@@ -92,10 +92,18 @@ class field_controller extends \core_customfield\field_controller {
         $namesets = array(array(null),array(null),array(null));
 
         foreach($records as $record){
-            $namesets[$record->categorytype][] = $record->categoryname;
+            $recordnamearray = preg_split("/\n/", $record->categoryname);#
+            array_pop($recordnamearray);
+            array_pop($recordnamearray);
+            $namesets[$record->categorytype] = $recordnamearray;
+            array_unshift($namesets[$record->categorytype]," ");
+
         }
         $nameset = $namesets[$this->get_categorytype()];
-
+        If(nameset == null){
+            return array("leer");
+        }
+        var_dump($nameset);
         return $nameset;
     }
 
