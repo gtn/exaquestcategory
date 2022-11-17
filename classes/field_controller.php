@@ -103,7 +103,7 @@ class field_controller extends \core_customfield\field_controller {
         If(nameset == null){
             return array("leer");
         }
-        var_dump($nameset);
+
         return $nameset;
     }
 
