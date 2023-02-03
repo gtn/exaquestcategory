@@ -10,7 +10,6 @@
 namespace customfield_exaquestcategory;
 
 use core_customfield\data;
-use customfield_exaquestcategorymulti\field_controller;
 
 defined('MOODLE_INTERNAL') || die;
 
@@ -35,7 +34,7 @@ class data_controller extends \core_customfield\data_controller
 
     public function get_default_value() {
         $defaultvalue = $this->get_field()->get_configdata_property('defaultvalue');
-        $options = field_controller::get_options_array($this->get_field());
+        $options = $this->get_field()->get_options();
         $defaultvaluesarray = [];
         $values = explode(",", $defaultvalue);
 
