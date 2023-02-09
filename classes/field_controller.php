@@ -95,7 +95,7 @@ class field_controller extends \core_customfield\field_controller {
             //$recordnamearray = preg_split("/\n/", $record->categoryname);#
             //array_pop($recordnamearray);
             //array_pop($recordnamearray);
-            $namesets[$record->categorytype][] = $record->categoryname;
+            $namesets[$record->categorytype][$record->id] = $record->categoryname;
             //array_unshift($namesets[$record->categorytype]," ");
 
         }
