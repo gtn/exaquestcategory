@@ -100,7 +100,7 @@ class field_controller extends \core_customfield\field_controller {
 
         }
         $nameset = $namesets[$this->get_categorytype()];
-        If(nameset == null){
+        if($nameset == null){
             return array("leer");
         }
 
