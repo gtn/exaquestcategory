@@ -74,9 +74,15 @@ class data_controller extends \core_customfield\data_controller
         $elementname = $this->get_form_element_name();
 
         if($categorytype == 3) {
-            $select = $mform->addElement('select', $elementname, $field->get_formatted_name(), $nameset);
-            $select->setMultiple(true);
+            //$select = $mform->addElement('select', $elementname, $field->get_formatted_name(), $nameset);
+            //$select->setMultiple(true);
+
+            $options = array(
+                'multiple' => true,
+            );
+            $mform->addElement('autocomplete', $elementname, $field->get_formatted_name(), $nameset, $options);
             $mform->addRule($elementname, get_string('missingcolor'), 'required', null, 'client');
+
         } else {
             $select = $mform->addElement('select', $elementname, $field->get_formatted_name(), $nameset);
             $select->setMultiple(false);
