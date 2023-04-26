@@ -28,4 +28,4 @@ $string['errorconfigunique'] = 'The checkbox field cannot be defined as unique.'
 $string['pluginname'] = 'Exaquestcategory';
 $string['privacy:metadata'] = 'The Checkbox field type plugin doesn\'t store any personal data; it uses tables defined in core.';
 $string['specificsettings'] = 'Checkbox field settings';
-$string['required_messagetext'] = 'Required';
+$string['required_messagetext'] = 'Pflichtfeld';
