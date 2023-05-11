@@ -186,6 +186,11 @@ class data_controller extends \core_customfield\data_controller
             return null;
         }
 
+        // check if nameset property exists, otherwise there is an error in the moodle questionbank
+        if (!property_exists($this, 'nameset')) {
+            return null;
+        }
+
         $options = $this->nameset;
         if (array_key_exists($value, $options)) {
             return format_string($options[$value], true,
@@ -193,6 +198,23 @@ class data_controller extends \core_customfield\data_controller
         }
 
         return null;
+    }
+
+    /**
+     * Checks if the value is empty
+     * Overwritten to handle the case of a select field with multiple options
+     * TODO: check if there is a more elegant solution. Maybe there should not be an array in this case, and it should have been checked before
+     * @param mixed $value
+     * @return bool
+     */
+    protected function is_empty($value) : bool {
+        if ($this->datafield() === 'value' || $this->datafield() === 'charvalue' || $this->datafield() === 'shortcharvalue') {
+            if (is_array($value)) {
+                return empty($value);
+            }
+            return '' . $value === '';
+        }
+        return empty($value);
     }
 }
 
