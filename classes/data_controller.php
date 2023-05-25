@@ -66,9 +66,25 @@ class data_controller extends \core_customfield\data_controller
     public function instance_form_definition(\MoodleQuickForm $mform)
     {
         global $COURSE, $PAGE, $DB;
-        $block_manager = $PAGE->blocks;
-        $block_manager->load_blocks(true);
-        if($block_manager->is_block_present('exaquest')) {
+        $block_presesnt = false;
+        $page = new \moodle_page();
+        $page->set_url('/course/view.php', array('id' => $COURSE->id));
+        $page->set_pagelayout('course');
+        $page->set_course($COURSE);
+
+        $blockmanager = $page->blocks;
+
+        $blockmanager->load_blocks(true);
+
+        foreach ($blockmanager->get_regions() as $region) {
+            foreach ($blockmanager->get_blocks_for_region($region) as $block) {
+                $instance = $block->instance;
+                if ($instance->blockname == "exaquest") {
+                    $block_presesnt = true;
+                }
+            }
+        }
+        if($block_presesnt) {
             $field = $this->get_field();
             $categorytype = $field->get_categorytype();
 
