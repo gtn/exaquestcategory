@@ -65,29 +65,32 @@ class data_controller extends \core_customfield\data_controller
      */
     public function instance_form_definition(\MoodleQuickForm $mform)
     {
-        global $COURSE, $DB;
+        global $COURSE, $PAGE, $DB;
+        $block_manager = $PAGE->blocks;
+        $block_manager->load_blocks(true);
+        if($block_manager->is_block_present('exaquest')) {
+            $field = $this->get_field();
+            $categorytype = $field->get_categorytype();
 
-        $field = $this->get_field();
-        $categorytype= $field->get_categorytype();
+            $nameset = $field->get_options();
+            $elementname = $this->get_form_element_name();
 
-        $nameset = $field->get_options();
-        $elementname = $this->get_form_element_name();
+            if ($categorytype == 3) {
+                //$select = $mform->addElement('select', $elementname, $field->get_formatted_name(), $nameset);
+                //$select->setMultiple(true);
 
-        if($categorytype == 3) {
-            //$select = $mform->addElement('select', $elementname, $field->get_formatted_name(), $nameset);
-            //$select->setMultiple(true);
+                $options = array(
+                    'multiple' => true,
+                );
+                $mform->addElement('autocomplete', $elementname, $field->get_formatted_name(), $nameset, $options);
+                $mform->addRule($elementname, get_string('missingcolor'), 'required', null, 'client');
 
-            $options = array(
-                'multiple' => true,
-            );
-            $mform->addElement('autocomplete', $elementname, $field->get_formatted_name(), $nameset, $options);
-            $mform->addRule($elementname, get_string('missingcolor'), 'required', null, 'client');
-
-        } else {
-            $select = $mform->addElement('select', $elementname, $field->get_formatted_name(), $nameset);
-            $select->setMultiple(false);
-            $mform->addRule($elementname, get_string('missingcolor'), 'required', null, 'client');
-            $mform->addRule($elementname, 'message text', 'nonzero', null, 'client');
+            } else {
+                $select = $mform->addElement('select', $elementname, $field->get_formatted_name(), $nameset);
+                $select->setMultiple(false);
+                $mform->addRule($elementname, get_string('missingcolor'), 'required', null, 'client');
+                $mform->addRule($elementname, 'message text', 'nonzero', null, 'client');
+            }
         }
     }
 
@@ -187,10 +190,6 @@ class data_controller extends \core_customfield\data_controller
         }
 
         $options = $this->nameset;
-        if (array_key_exists($value, $options)) {
-            return format_string($options[$value], true,
-                ['context' => $this->get_field()->get_handler()->get_configuration_context()]);
-        }
 
         return null;
     }

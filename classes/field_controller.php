@@ -49,8 +49,8 @@ class field_controller extends \core_customfield\field_controller {
         $mform->setExpanded('header_specificsettings', true);
         $mform->addElement('select', 'configdata[categorytype]', get_string('Kategorientyp'), array(0 => 'Fragencharakter', 1 => 'Klassifikation', 2 => 'Fragefach', 3 => 'Lehrinhalt'));
         $mform->setType('configdata[categorytype]', PARAM_INT);
-
     }
+
 
     /**
      * Return configured field options
