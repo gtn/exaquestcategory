@@ -85,17 +85,18 @@ class data_controller extends \core_customfield\data_controller
                 $mform->addElement('autocomplete', $elementname, $field->get_formatted_name(), $nameset, $options);
                 $mform->addRule($elementname, get_string('missingcolor'), 'required', null, 'client');
 
-            $options = array(
-                'multiple' => true,
-            );
-            $mform->addElement('autocomplete', $elementname, $field->get_formatted_name(), $nameset, $options);
-            $mform->addRule($elementname, '', 'required', null, 'client');
+                $options = array(
+                    'multiple' => true,
+                );
+                $mform->addElement('autocomplete', $elementname, $field->get_formatted_name(), $nameset, $options);
+                $mform->addRule($elementname, '', 'required', null, 'client');
 
-        } else {
-            $select = $mform->addElement('select', $elementname, $field->get_formatted_name(), $nameset);
-            $select->setMultiple(false);
-            $mform->addRule($elementname, '', 'required', null, 'client');
-            $mform->addRule($elementname, get_string('required_messagetext', 'customfield_exaquestcategory'), 'nonzero', null, 'client');
+            } else {
+                $select = $mform->addElement('select', $elementname, $field->get_formatted_name(), $nameset);
+                $select->setMultiple(false);
+                $mform->addRule($elementname, '', 'required', null, 'client');
+                $mform->addRule($elementname, get_string('required_messagetext', 'customfield_exaquestcategory'), 'nonzero', null, 'client');
+            }
         }
     }
 
