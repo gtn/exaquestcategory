@@ -101,17 +101,25 @@ class data_controller extends \core_customfield\data_controller
                 $mform->addElement('autocomplete', $elementname, $field->get_formatted_name(), $nameset, $options);
                 $mform->addRule($elementname, get_string('missingcolor'), 'required', null, 'client');
 
-                $options = array(
-                    'multiple' => true,
-                );
-                $mform->addElement('autocomplete', $elementname, $field->get_formatted_name(), $nameset, $options);
                 $mform->addRule($elementname, '', 'required', null, 'client');
+                $mform->addHelpButton($elementname, 'lerninhalt', 'customfield_exaquestcategory');
 
             } else {
                 $select = $mform->addElement('select', $elementname, $field->get_formatted_name(), $nameset);
                 $select->setMultiple(false);
                 $mform->addRule($elementname, '', 'required', null, 'client');
                 $mform->addRule($elementname, get_string('required_messagetext', 'customfield_exaquestcategory'), 'nonzero', null, 'client');
+                switch($categorytype){
+                    case 0:
+                        $mform->addHelpButton($elementname, 'fragencharakter', 'customfield_exaquestcategory');
+                        break;
+                    case 1:
+                        $mform->addHelpButton($elementname, 'klassifikation', 'customfield_exaquestcategory');
+                        break;
+                    case 2:
+                        $mform->addHelpButton($elementname, 'fragefach', 'customfield_exaquestcategory');
+                        break;
+                }
             }
         }
     }

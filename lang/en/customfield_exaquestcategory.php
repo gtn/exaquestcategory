@@ -29,3 +29,13 @@ $string['pluginname'] = 'Exaquestcategory';
 $string['privacy:metadata'] = 'The Checkbox field type plugin doesn\'t store any personal data; it uses tables defined in core.';
 $string['specificsettings'] = 'Checkbox field settings';
 $string['required_messagetext'] = 'Required';
+
+$string['fragencharakter'] = 'Fragencharakter';
+$string['klassifikation'] = 'Klassifikation';
+$string['fragefach'] = 'Fragefach';
+$string['lerninhalt'] = 'Lerninhalt';
+
+$string['fragencharakter_help'] = 'Need definition';
+$string['klassifikation_help'] = 'Need definition';
+$string['fragefach_help'] = 'Need definition';
+$string['lerninhalt_help'] = 'Need definition';
