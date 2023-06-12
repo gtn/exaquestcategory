@@ -181,7 +181,7 @@ class data_controller extends \core_customfield\data_controller
      * @return array
      */
     public function get_value() {
-        if($this->get_field()->get_categorytype() == 3) {
+        if($this->get_field()->get_categorytype() == 3) { // 3 = multiple select
             if (!$this->get('id')) {
                 return $this->get_default_value();
             }
