@@ -87,7 +87,7 @@ class field_controller extends \core_customfield\field_controller {
     public function get_options(): array {
         global $DB, $COURSE;
 
-        $records = $DB->get_records("block_exaquestcategories",  array("coursecategoryid" => $COURSE->category));
+        $records = $DB->get_records("block_exaquestcategories",  array("coursecategoryid" => $COURSE->category, "deleted" => 0));
 
         $namesets = array(array(null),array(null),array(null));
 
