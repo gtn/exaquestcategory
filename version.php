@@ -24,5 +24,5 @@ v<?php
 defined('MOODLE_INTERNAL') || die();
 
 $plugin->component = 'customfield_exaquestcategory';
-$plugin->version   = 2022041900;
+$plugin->version   = 2022072100;
 $plugin->requires  = 2022041200;
